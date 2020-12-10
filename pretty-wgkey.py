@@ -1,27 +1,28 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import time
 import argparse
+import time
 from base64 import b64encode
 from string import ascii_uppercase, ascii_lowercase, digits
+
 from nacl.public import PrivateKey
 
 parser = argparse.ArgumentParser()
 parser.add_argument("string", help="The string to find in the public key", type=str)
 parser.add_argument(
-    "-p",
-    "--place",
-    choices=["anywhere", "beginning"],
-    default="anywhere",
-    help="The place where to find the chosen string in the public key",
-    type=str,
+        "-p",
+        "--place",
+        choices=["anywhere", "beginning"],
+        default="anywhere",
+        help="The place where to find the chosen string in the public key",
+        type=str,
 )
 parser.add_argument(
-    "-dt",
-    "--doctest",
-    action="store_true",
-    help="Launch internal tests (provided by doctest)",
+        "-dt",
+        "--doctest",
+        action="store_true",
+        help="Launch internal tests (provided by doctest)",
 )
 args = parser.parse_args()
 
@@ -141,9 +142,9 @@ def main():
 
     duration, speed = get_speed(count, start_time, end_time)
     print(
-        "{} keys generated in {} seconds ({} keys per second).\n".format(
-            count, duration, speed
-        )
+            "{} keys generated in {} seconds ({} keys per second).\n".format(
+                    count, duration, speed
+            )
     )
 
 
