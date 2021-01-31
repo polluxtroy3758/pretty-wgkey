@@ -11,23 +11,23 @@ from nacl.public import PrivateKey
 parser = argparse.ArgumentParser()
 parser.add_argument("string", help="The string to find in the public key", type=str)
 parser.add_argument(
-        "-p",
-        "--place",
-        choices=["anywhere", "beginning"],
-        default="anywhere",
-        help="The place where to find the chosen string in the public key",
-        type=str,
+    "-p",
+    "--place",
+    choices=["anywhere", "startswith"],
+    default="anywhere",
+    help="The place where to find the chosen string in the public key",
+    type=str,
 )
 parser.add_argument(
-        "-dt",
-        "--doctest",
-        action="store_true",
-        help="Launch internal tests (provided by doctest)",
+    "-dt",
+    "--doctest",
+    action="store_true",
+    help="Launch internal tests (provided by doctest)",
 )
 args = parser.parse_args()
 
 
-def validate_string(s):
+def validate_string(string: str) -> bool:
     """Check if string is combosed of base64 characters
 
     An arbitrary limit of maximum 10 chars has been set to limit computing time.
@@ -44,10 +44,10 @@ def validate_string(s):
     Exception: String is longer than 10 characters.
     """
     allowed_chars = ascii_lowercase + ascii_uppercase + digits + "+/"
-    if len(s) > 10:
+    if len(string) > 10:
         raise Exception("String is longer than 10 characters.")
-    if s != "":
-        for char in s:
+    if string != "":
+        for char in string:
             if char in allowed_chars:
                 continue
             else:
@@ -70,29 +70,29 @@ def generate_keys() -> tuple:
     )
 
 
-def found_in_key(method: str, string: str, pubkey: str) -> bool:
+def found_in_pubkey(method: str, string: str, pubkey: str) -> bool:
     """Search for a string
 
     Returns a boolean.
 
-    >>> found_in_key("anywhere", "true", "lQeL7xeHoXQJfaa4z3/bF7DvpKTRuESk4MAqTy135Ss=")
+    >>> found_in_pubkey("anywhere", "true", "lQeL7xeHoXQJfaa4z3/bF7DvpKTRuESk4MAqTy135Ss=")
     True
-    >>> found_in_key("anywhere", "false", "lQeL7xeHoXQJfaa4z3/bF7DvpKTRuESk4MAqTy135Ss=")
+    >>> found_in_pubkey("anywhere", "false", "lQeL7xeHoXQJfaa4z3/bF7DvpKTRuESk4MAqTy135Ss=")
     False
-    >>> found_in_key("beginning", "true", "TruEyg6K3G/AP9O5uoOMyvkXrE+x0eWSh9bzBj39aHQ=")
+    >>> found_in_pubkey("beginning", "true", "TruEyg6K3G/AP9O5uoOMyvkXrE+x0eWSh9bzBj39aHQ=")
     True
-    >>> found_in_key("beginning", "false", "TruEyg6K3G/AP9O5uoOMyvkXrE+x0eWSh9bzBj39aHQ=")
+    >>> found_in_pubkey("beginning", "false", "TruEyg6K3G/AP9O5uoOMyvkXrE+x0eWSh9bzBj39aHQ=")
     False
     """
     low_string = string.lower()
-    low_key = pubkey.lower()
+    low_pubkey = pubkey.lower()
     if method == "anywhere":
-        if low_string in low_key:
+        if low_string in low_pubkey:
             return True
         else:
             return False
-    elif method == "beginning":
-        if low_key.startswith(low_string):
+    elif method == "startswith":
+        if low_pubkey.startswith(low_string):
             return True
         else:
             return False
@@ -129,7 +129,7 @@ def main():
     while not found:
         try:
             privkey, pubkey = generate_keys()
-            found = found_in_key(method, name, pubkey)
+            found = found_in_pubkey(method, name, pubkey)
             count += 1
         except KeyboardInterrupt:
             print("CTRL-C detected, aborting...\n")
@@ -142,9 +142,9 @@ def main():
 
     duration, speed = get_speed(count, start_time, end_time)
     print(
-            "{} keys generated in {} seconds ({} keys per second).\n".format(
-                    count, duration, speed
-            )
+        "{} keys generated in {} seconds ({} keys per second).\n".format(
+            count, duration, speed
+        )
     )
 
 

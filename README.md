@@ -17,7 +17,7 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
-  -p {anywhere,beginning}, --place {anywhere,beginning}
+  -p {anywhere,startswith}, --place {anywhere,startswith}
                         The place where to find the chosen string in the
                         public key
   -dt, --doctest        Launch internal tests (provided by doctest)
